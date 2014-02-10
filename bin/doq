@@ -1,0 +1,24 @@
+#!/usr/bin/env node
+
+var doc =
+"Usage: \n\
+  doq [--header=<header>] [--footer=<footer>] [<input>] [<output>] [--debug] \n\
+  doq -h | --help \
+ "
+ ;
+
+var   args   = require('docopt').docopt(doc)
+	, doq    = require('../')
+;
+
+// Replace null with undefined, or underscore's defaults() will fail.
+for (i in args)
+	if (null == args[i])
+		args[i] = undefined;
+
+doq({
+	  input: args['<input>']
+	, output: args['<output>']
+	, header: { name: args['--header'] }
+	, footer: { name: args['--footer'] }
+});
