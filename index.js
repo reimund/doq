@@ -1,47 +1,70 @@
 var   marked   = require('marked')
-	, fs       = require('fs')
-	, _        = require('underscore')
-	, Mustache = require('mustache')
+    , fs       = require('fs')
+    , path     = require('path')
+    , Mustache = require('mustache')
 ;
+
+var Doq = function(options)
+{
+	this.templates = options.templates;
+	this.output    = options.output;
+}
+
+Doq.prototype = function()
+{
+	var render = function(template) {
+		var   extension = path.extname(template.name)
+			, result    = null
+			, text      = fs.readFileSync(template.name, { encoding: 'utf8' })
+		;
+
+		if ('.html' == extension) {
+			// Use Mustache.
+			result = Mustache.render(text, template.data);
+		}
+		else if ('.md' == extension) {
+			// Use marked.
+			result = marked(text);
+		}
+		return result;
+	};
+
+	var generate = function() {
+		var output = '';
+
+		this.templates.forEach(function(template) {
+			output += render.call(this, template);
+		});
+
+		return output;
+	};
+
+	return {
+		  generate: generate
+		, render: render
+	};
+}();
+
 
 module.exports = function(options) {
 
-	var   bodyText   = ''
-		, headerText = ''
-		, footerText = ''
-		, result     = null
+	marked.setOptions({
+		  renderer: new marked.Renderer()
+		, gfm: true
+		, tables: true
+		, breaks: false
+		, pedantic: false
+		, sanitize: true
+		, smartLists: true
+		, smartypants: false
+	});
+
+	var   doq    = new Doq(options)
+		, result = doq.generate()
 	;
 
-	_.defaults(options, {
-		  input: 'index.md'
-		, output: 'index.html'
-		, header: { name: false }
-		, footer: { name: false }
-	});
-
-	if (!_.isEmpty(options.header.name))
-		headerText = fs.readFileSync(options.header.name, { encoding: 'utf8' })
-
-	if (!_.isEmpty(options.footer.name))
-		footerText = fs.readFileSync(options.footer.name, { encoding: 'utf8' })
-
-	marked.setOptions({
-		renderer: new marked.Renderer(),
-		gfm: true,
-		tables: true,
-		breaks: false,
-		pedantic: false,
-		sanitize: true,
-		smartLists: true,
-		smartypants: false
-	});
-
-	bodyText = fs.readFileSync(options.input, { encoding: 'utf8' });
-
-	result = Mustache.render(headerText, options.header.data)
-		+ marked(bodyText)
-		+ Mustache.render(footerText, options.footer.data);
-
-	fs.writeFileSync(options.output, result, { encoding: 'utf8' });
-	//console.log('Markdown\'ed text saved to ' + options.output + '.');
+	if (doq.output)
+		fs.writeFileSync(doq.output, result, { encoding: 'utf8' });
+	else
+		return result;
 };

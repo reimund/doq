@@ -2,23 +2,27 @@
 
 var doc =
 "Usage: \n\
-  doq [--header=<header>] [--footer=<footer>] [<input>] [<output>] [--debug] \n\
-  doq -h | --help \
- "
- ;
+  doq [--output=<output>] [--data=<data>] [--debug] <templates>... \n\
+  doq -h | --help \n\
+  doq --version \
+";
 
-var   args   = require('docopt').docopt(doc)
+var   args   = require('docopt').docopt(doc, { version: 'doq ' + require('../package.json').version })
 	, doq    = require('../')
+	, templates = []
 ;
 
-// Replace null with undefined, or underscore's defaults() will fail.
-for (i in args)
-	if (null == args[i])
-		args[i] = undefined;
-
-doq({
-	  input: args['<input>']
-	, output: args['<output>']
-	, header: { name: args['--header'] }
-	, footer: { name: args['--footer'] }
+args['<templates>'].forEach(function(template) {
+	templates.push({
+		  name: template
+		, data: JSON.parse(args['--data'] ? args['--data'] : null)
+	});
 });
+
+console.log(
+	doq({
+		  templates: templates
+		, output: args['<output>']
+		, debug: args['--debug']
+	})
+);
