@@ -1,6 +1,7 @@
 var   marked   = require('marked')
     , fs       = require('fs')
     , path     = require('path')
+    , toq      = require('toq')
     , Mustache = require('mustache')
 ;
 
@@ -26,6 +27,7 @@ Doq.prototype = function()
 			// Use marked.
 			result = marked(text);
 		}
+
 		return result;
 	};
 
@@ -36,7 +38,10 @@ Doq.prototype = function()
 			output += render.call(this, template);
 		});
 
-		return output;
+		var toc   = toq(output, { sectionNumbers: false, flat: false });
+		return output.replace('<p>@@TOC@@</p>', toc.toc);
+
+		return parts[0] + toc.toc + toc.contents;
 	};
 
 	return {
