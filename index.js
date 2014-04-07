@@ -85,8 +85,25 @@ Doq.prototype = function()
 
 module.exports = function(options) {
 
+	var renderer = new marked.Renderer()
+	  , ids      = {};
+
+	/**
+	 * Avoid duplicate ids;
+	 */
+	renderer.heading = function (text, level) {
+		var id = text.toLowerCase().replace(/[^\w]+/g, '-');
+
+		ids[id] = undefined == ids[id] ? 1 : ids[id] + 1;
+
+		if (1 < ids[id])
+			id += '-' + ids[id];
+
+		return '<h' + level +' id="' + id + '">' + text + '</h' + level + '>';
+	};
+
 	marked.setOptions({
-		  renderer: new marked.Renderer()
+		  renderer: renderer
 		, gfm: true
 		, tables: true
 		, breaks: false
