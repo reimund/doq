@@ -71,8 +71,6 @@ Doq.prototype = function()
 
 		var toc   = toq(output, { sectionNumbers: false, flat: false });
 		return output.replace('<p>@@TOC@@</p>', toc.toc);
-
-		return parts[0] + toc.toc + toc.contents;
 	};
 
 	return {
@@ -118,7 +116,11 @@ module.exports = function(options) {
 	;
 
 	if (doq.output)
+	{
 		fs.writeFileSync(doq.output, result, { encoding: 'utf8' });
+	}
 	else
+	{
 		return result;
+	}
 };

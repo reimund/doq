@@ -7,22 +7,25 @@ var doc =
   doq --version \
 ";
 
-var   args   = require('docopt').docopt(doc, { version: 'doq ' + require('../package.json').version })
-	, doq    = require('../')
-	, templates = []
+var args      = require('docopt').docopt(doc, { version: 'doq ' + require('../package.json').version })
+  , doq       = require('../')
+  , templates = []
 ;
 
 args['<templates>'].forEach(function(template) {
 	templates.push({
-		  name: template
-		, data: JSON.parse(args['--data'] ? args['--data'] : null)
+		name: template,
+		data: JSON.parse(args['--data'] ? args['--data'] : null),
 	});
 });
 
-console.log(
+var result = 
 	doq({
-		  templates: templates
-		, output: args['<output>']
-		, debug: args['--debug']
+		templates: templates,
+		output: args['--output'],
+		debug: args['--debug'],
 	})
-);
+;
+
+if (null != result)
+	console.log(result);
