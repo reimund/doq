@@ -2,9 +2,9 @@ var doq = require('../../index.js');
 
 doq({
     templates: [
-        { name: 'templates/header.html' },
-        { name: 'templates/body.md' },
-        { name: 'templates/footer.html' },
+        { name: __dirname + '/templates/header.html' },
+        { name: __dirname + '/templates/body.md' },
+        { name: __dirname + '/templates/footer.html' },
     ],
     output: 'index.html',
 });
