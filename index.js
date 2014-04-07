@@ -1,8 +1,8 @@
-var   marked   = require('marked')
-    , fs       = require('fs')
-    , path     = require('path')
-    , toq      = require('toq')
-    , Mustache = require('mustache')
+var marked   = require('marked')
+  , fs       = require('fs')
+  , path     = require('path')
+  , toq      = require('toq')
+  , Mustache = require('mustache')
 ;
 
 var Doq = function(options)
@@ -82,7 +82,6 @@ Doq.prototype = function()
 
 
 }();
-
 
 module.exports = function(options) {
 
