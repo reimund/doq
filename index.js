@@ -7,17 +7,47 @@ var   marked   = require('marked')
 
 var Doq = function(options)
 {
-	this.templates = options.templates;
-	this.output    = options.output;
+	this.templates    = options.templates;
+	this.templateRoot = options.templateRoot;
+	this.output       = options.output;
 }
 
 Doq.prototype = function()
 {
+	var renderPartials = function(str) {
+		var tagName     = '';
+		var result      = str;
+		var partialTags = str.match(/\{\{\>\s?([a-zA-z_\.]+)\s?\}\}/gi)
+
+		for (i in partialTags)
+		{
+			tagName              = partialTags[i].replace(/[\{\}\>\s]/g, '');
+			var templateBasename = this.templateRoot + tagName;
+			var templateFile     = null;
+
+			if (fs.existsSync(templateBasename + '.md')) {
+				templateFile = templateBasename + '.md';
+			}
+			else if (fs.existsSync(templateBasename + '.html')) {
+				templateFile = templateBasename + '.html';
+			}
+
+			if (null != templateFile) {
+				text   = renderPartials.call(this, fs.readFileSync(templateFile, { encoding: 'utf8' }));
+				result = result.replace(partialTags[i], text);
+			}
+		}
+
+		return result;
+	};
+
 	var render = function(template) {
 		var   extension = path.extname(template.name)
 			, result    = null
 			, text      = fs.readFileSync(template.name, { encoding: 'utf8' })
 		;
+
+		text = renderPartials.call(this, text)
 
 		if ('.html' == extension) {
 			// Use Mustache.
@@ -25,7 +55,7 @@ Doq.prototype = function()
 		}
 		else if ('.md' == extension) {
 			// Use marked.
-			result = marked(text);
+			result = marked(Mustache.render(text, template.data));
 		}
 
 		return result;
@@ -33,9 +63,10 @@ Doq.prototype = function()
 
 	var generate = function() {
 		var output = '';
+		var self   = this;
 
 		this.templates.forEach(function(template) {
-			output += render.call(this, template);
+			output += render.call(self, template);
 		});
 
 		var toc   = toq(output, { sectionNumbers: false, flat: false });
@@ -48,6 +79,8 @@ Doq.prototype = function()
 		  generate: generate
 		, render: render
 	};
+
+
 }();
 
 
@@ -59,7 +92,7 @@ module.exports = function(options) {
 		, tables: true
 		, breaks: false
 		, pedantic: false
-		, sanitize: true
+		, sanitize: false
 		, smartLists: true
 		, smartypants: false
 	});
