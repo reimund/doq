@@ -24,6 +24,7 @@ var result =
 		templates: templates,
 		output: args['--output'],
 		debug: args['--debug'],
+		cli: true,
 	})
 ;
 

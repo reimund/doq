@@ -10,6 +10,7 @@ var Doq = function(options)
 	this.templates    = options.templates;
 	this.templateRoot = options.templateRoot;
 	this.output       = options.output;
+	this.cli          = options.cli;
 }
 
 Doq.prototype = function()
@@ -44,7 +45,8 @@ Doq.prototype = function()
 	var render = function(template) {
 		var   extension = path.extname(template.name)
 			, result    = null
-			, text      = fs.readFileSync(template.name, { encoding: 'utf8' })
+			, root      = this.cli ? process.cwd() + '/' : path.dirname(process.argv[1]) + '/'
+			, text      = fs.readFileSync(root + template.name, { encoding: 'utf8' })
 		;
 
 		text = renderPartials.call(this, text)
