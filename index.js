@@ -7,10 +7,11 @@ var marked   = require('marked')
 
 var Doq = function(options)
 {
-	this.templates    = options.templates;
-	this.templateRoot = options.templateRoot;
-	this.output       = options.output;
-	this.cli          = options.cli;
+	this.templates      = options.templates;
+	this.templateRoot   = options.templateRoot;
+	this.output         = options.output;
+	this.cli            = options.cli;
+	this.sectionNumbers = options.sectionNumbers;
 }
 
 Doq.prototype = function()
@@ -71,7 +72,9 @@ Doq.prototype = function()
 			output += render.call(self, template);
 		});
 
-		var toc   = toq(output, { sectionNumbers: false, flat: false });
+		var toc = toq(output, { sectionNumbers: this.sectionNumbers, flat: false });
+		output = toc.contents;
+
 		return output.replace('<p>@@TOC@@</p>', toc.toc);
 	};
 
