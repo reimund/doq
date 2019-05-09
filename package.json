@@ -1,6 +1,6 @@
 {
   "name": "doq",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "Easy documentation using markdown.",
   "main": "index.js",
   "bin": {
