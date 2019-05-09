@@ -1,2 +1,2 @@
-# Content
+# Content title
 Main content here.

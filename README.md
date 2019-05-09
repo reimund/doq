@@ -50,5 +50,5 @@ Usage:
 
 ### Simple example:
 ```
-doq header.html content.md footer.html --output index.html
+doq header.html body.md footer.html --output index.html
 ```
