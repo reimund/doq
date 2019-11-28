@@ -7,7 +7,7 @@ var marked   = require('marked')
 
 var Doq = function(options) {
 	this.templates      = options.templates;
-	this.templateRoot   = options.templateRoot;
+	this.templateRoot   = (options.templateRoot + '/').replace('//', '/');
 	this.output         = options.output;
 	this.cli            = options.cli;
 	this.sectionNumbers = options.sectionNumbers;
