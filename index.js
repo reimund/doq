@@ -5,8 +5,7 @@ var marked   = require('marked')
   , Mustache = require('mustache')
 ;
 
-var Doq = function(options)
-{
+var Doq = function(options) {
 	this.templates      = options.templates;
 	this.templateRoot   = options.templateRoot;
 	this.output         = options.output;
@@ -14,15 +13,13 @@ var Doq = function(options)
 	this.sectionNumbers = options.sectionNumbers;
 }
 
-Doq.prototype = function()
-{
+Doq.prototype = function() {
 	var renderPartials = function(str) {
 		var tagName     = '';
 		var result      = str;
 		var partialTags = str.match(/\{\{\>\s?([a-zA-z_\.]+)\s?\}\}/gi)
 
-		for (i in partialTags)
-		{
+		for (i in partialTags) {
 			tagName              = partialTags[i].replace(/[\{\}\>\s]/g, '');
 			var templateBasename = this.templateRoot + tagName;
 			var templateFile     = null;
@@ -82,12 +79,9 @@ Doq.prototype = function()
 		  generate: generate
 		, render: render
 	};
-
-
 }();
 
 module.exports = function(options) {
-
 	var renderer = new marked.Renderer()
 	  , ids      = {};
 
@@ -120,12 +114,10 @@ module.exports = function(options) {
 		, result = doq.generate()
 	;
 
-	if (doq.output)
-	{
+	if (doq.output) {
 		fs.writeFileSync(doq.output, result, { encoding: 'utf8' });
 	}
-	else
-	{
+	else {
 		return result;
 	}
 };
