@@ -17,7 +17,7 @@ Doq.prototype = function() {
 	var renderPartials = function(str) {
 		var tagName     = '';
 		var result      = str;
-		var partialTags = str.match(/\{\{\>\s?([a-zA-z_\.]+)\s?\}\}/gi)
+		var partialTags = str.match(/\{\{\>\s?([a-zA-z_\-\.]+)\s?\}\}/gi)
 
 		for (i in partialTags) {
 			tagName              = partialTags[i].replace(/[\{\}\>\s]/g, '');
